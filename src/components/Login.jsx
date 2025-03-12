@@ -2,9 +2,9 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { auth } from "../Firebase"
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword } from "firebase/auth"
 
-const SignUpForm = () => {
+const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -14,36 +14,26 @@ const SignUpForm = () => {
     e.preventDefault()
     setError("")
 
-    // Check if inputs are empty
     if (!email || !password) {
       alert("Please fill all the inputs")
       return
     }
 
-    // Check password length
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long")
-      return
-    }
-
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
-      alert("Account created successfully")
-      // Clear inputs
-      setEmail("")
-      setPassword("")
-      // Redirect to login page
-      navigate("/login")
+      await signInWithEmailAndPassword(auth, email, password)
+      alert("Login successfully")
+      // Redirect to home page
+      navigate("/")
     } catch (err) {
       console.log(err)
-      setError("Failed to create account. " + err.message)
+      setError("Failed to login. Please check your email and password.")
     }
   }
 
   return (
-    <div className="signup-container flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <form className="signup-form w-full max-w-md rounded-lg bg-white p-8 shadow-lg" onSubmit={handleSubmit}>
-        <h2 className="mb-6 text-center text-2xl font-bold text-gray-800">Sign Up</h2>
+    <div className="login-container flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <form className="login-form w-full max-w-md rounded-lg bg-white p-8 shadow-lg" onSubmit={handleSubmit}>
+        <h2 className="mb-6 text-center text-2xl font-bold text-gray-800">Login</h2>
 
         <label htmlFor="email" className="mb-2 block font-medium text-gray-700">
           Email:
@@ -73,13 +63,13 @@ const SignUpForm = () => {
           type="submit"
           className="w-full rounded-md bg-blue-600 py-2 px-4 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Submit
+          Login
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Already Registered?{" "}
-          <Link to="/login" className="text-blue-600 hover:text-blue-800">
-            Login
+          Don't have an account?{" "}
+          <Link to="/sign" className="text-blue-600 hover:text-blue-800">
+            Sign Up
           </Link>
         </p>
       </form>
@@ -87,5 +77,5 @@ const SignUpForm = () => {
   )
 }
 
-export default SignUpForm
+export default Login
 
